@@ -19,6 +19,7 @@ dsh-skills/
 | 技能 | 简介 | 版本基准 |
 |---|---|---|
 | [dsh-known-truth](skills/dsh-known-truth/) | 经核实的 DSH 内部知识：profile/bundle 机制、组合与补丁层、默认未启用功能、模块孪生诊断；源码级出处索引 | dsh CLI `0.1.0-rc.6` |
+| [dsh-skill-creator](skills/dsh-skill-creator/) | 创建、改进、评估 DSH 技能：意图捕获、description 触发写作、渐进披露、真实提示词测试、内联自我反思、打包分发 | dsh CLI `0.1.0-rc.6`（frontmatter 契约） |
 
 ## 安装与使用
 
