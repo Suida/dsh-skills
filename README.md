@@ -44,8 +44,6 @@ New-Item -ItemType Junction -Path ~/.dsh/skills/dsh-known-truth `
 
 ## 版本与维护约定
 
-- 每个 skill 在 SKILL.md 开头声明其 **dsh 版本基准**；升级 dsh 后应按
-  各 skill 的出处索引复核并更新基准。
-- 知识类结论只引用**有版本管理的代码仓库**出处（含仓内文档），不引用
-  无版本管理的官网页面；实证结论须标注验证方法。
-- 贡献与维护细则见 [AGENTS.md](AGENTS.md)。
+- 规范分两层：全局规范适用于所有 skill；每个有额外要求的技能在
+  [AGENTS.md](AGENTS.md) 的「专项约定」下拥有自己的一节（含版本基准、
+  复核方式、自查项）。
