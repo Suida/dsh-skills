@@ -34,6 +34,7 @@
 | Cordis 自省工具（含信任立场） | [packages/extensions/tool-cordis](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/extensions/tool-cordis/README.md) |
 | 持久终端 | [packages/terminal](https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/terminal) |
 | 会话日志 zstd 帧格式 | [packages/session/session-persistence-jsonl](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/session/session-persistence-jsonl/README.md) |
+| 会话自动标题（服务 + 默认 LLM provider + 共享库） | [packages/session/session-title](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/session/session-title/README.md) · [packages/session/session-title-first-prompt-llm](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/session/session-title-first-prompt-llm/README.md) · [packages/session/session-title-llm](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/session/session-title-llm/README.md)；默认配置行见 `packages/bundle/base/cordis.patch.yml` |
 | 模块孪生所涉包 | [packages/core/tools](https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/core/tools) · [packages/core/agent-loop](https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/core/agent-loop) |
 
 ## 使用建议

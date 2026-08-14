@@ -6,7 +6,8 @@ description: >-
   Use when the request mentions "dsh profile", "dsh plugin", "cordis.patch.yml",
   "bundles", "创建/新建 profile", "安装 dsh 插件", "dsh 组合/补丁层",
   "启用 dsh 隐藏功能/默认关闭的功能", "dsh settings.yaml", "dsh 凭据",
-  "权限预设", or debugging dsh tool-dispatch failures
+  "权限预设", "自动标题/session 标题生成", or debugging dsh tool-dispatch
+  failures
   such as "Cannot read properties of undefined (reading 'prepare')".
   Covers profile creation, in-box bundle discipline, module-twin diagnosis,
   opt-in feature enabling, and official source citations.
@@ -16,7 +17,8 @@ description: >-
 # dsh Known Truth
 
 经核实的 DSH（DeepSeek Harness）内部知识：profile/bundle 机制、组合与补丁层、
-默认未启用功能。所有有源码支撑的结论均引用代码仓库（含仓内文档）出处。
+默认未启用功能、核心子系统（如会话自动标题）。所有有源码支撑的结论均引用
+代码仓库（含仓内文档）出处。
 
 ## ⚠️ 版本基准（使用前必读）
 
@@ -39,6 +41,7 @@ description: >-
 | 用 `--dump-config` 验证组合、写补丁层、解析会话日志、插桩诊断 | `references/inspection.md` |
 | 启用某项"默认没有"的功能（全文搜索、time-context、schedule、MCP、自省工具等） | `references/default-off-features.md` |
 | settings/凭据/权限预设/agent preset/环境变量接缝 | `references/configuration-seams.md` |
+| 会话自动标题/标题生成流程、`session/title` 事件、`ctx.sessionTitle` | `references/session-title.md` |
 | 任何结论的官方出处（SSOT 索引） | `references/sources.md` |
 
 ## 三条最承重的红线（细节见各参考文档）
