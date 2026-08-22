@@ -2,8 +2,11 @@
 
 所有引用指向代码仓库 [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness)
 （git 版本管理；仓内 README/文档随代码同库演进）。**不引用官网文档**
-（无版本管理，无法与本 skill 的版本基准对齐）。仓库当前无 tag/release
-里程碑，链接按 `master` 分支路径给出；版本漂移时以提交历史核对。
+（无版本管理，无法与本 skill 的版本基准对齐）。仓库自 2026-08-17 起有
+`dsh-v*` tag 与 GitHub Release（首个为 `dsh-v0.1.0-rc.7`；本 skill 基准
+`dsh-v0.1.1-rc.2`）。链接按 `master` 分支路径给出；版本漂移时以 tag /
+提交历史核对（也可把链接的 `blob/master` 换成 `blob/dsh-v0.1.1-rc.2`
+钉住基准）。
 
 ## profile / bundle / 创建机制
 
@@ -34,7 +37,7 @@
 | Cordis 自省工具（含信任立场） | [packages/extensions/tool-cordis](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/extensions/tool-cordis/README.md) |
 | 持久终端 | [packages/terminal](https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/terminal) |
 | 会话日志 zstd 帧格式 | [packages/session/session-persistence-jsonl](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/session/session-persistence-jsonl/README.md) |
-| 会话自动标题（服务 + 默认 LLM provider + 共享库） | [packages/session/session-title](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/session/session-title/README.md) · [packages/session/session-title-first-prompt-llm](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/session/session-title-first-prompt-llm/README.md) · [packages/session/session-title-llm](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/session/session-title-llm/README.md)；默认配置行见 `packages/bundle/base/cordis.patch.yml` |
+| 会话自动标题（服务 + 内置 LLM providers + 共享库） | [packages/session/session-title](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/session/session-title/README.md) · [packages/session/session-title-first-prompt-llm](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/session/session-title-first-prompt-llm/README.md) · [packages/session/session-title-all-prompts-llm](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/session/session-title-all-prompts-llm/README.md)（仓内源码，npm 制品未含） · [packages/session/session-title-llm](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/session/session-title-llm/README.md)；默认配置行见 `packages/bundle/base/cordis.patch.yml` |
 | 模块孪生所涉包 | [packages/core/tools](https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/core/tools) · [packages/core/agent-loop](https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/core/agent-loop) |
 
 ## 使用建议
@@ -43,4 +46,4 @@
   先核对链接文件的最新提交。
 - 本 skill 中标记「实证」的结论来自 0.1.0-rc.6 本地运行时证据
   （插桩日志、会话日志、命令实测），源码侧无直接文档；引用时说明其
-  实证性质。
+  实证性质。升级至 0.1.1-rc.2 时机制类论断已按源码逐条复核仍成立。

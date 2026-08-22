@@ -1,6 +1,7 @@
 # in-box bundle 纪律与模块孪生陷阱
 
-本主题 knowledge 来自一次真实事故的诊断（dsh 0.1.0-rc.6，插桩实证）。
+本主题 knowledge 来自一次真实事故的诊断（dsh 0.1.0-rc.6，插桩实证；
+0.1.1-rc.2 复核：故障链路源码逐字节未变，论断全部仍成立）。
 标记「实证」的结论以本地运行时证据为依据；机制所涉包：
 [@deepseek-ai/dsh-tools（packages/core/tools）](https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/core/tools)、
 [@deepseek-ai/dsh-agent-loop（packages/core/agent-loop）](https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/core/agent-loop)。

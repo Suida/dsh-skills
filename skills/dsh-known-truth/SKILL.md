@@ -22,12 +22,13 @@ description: >-
 
 ## ⚠️ 版本基准（使用前必读）
 
-本 skill 全部内容基于 **dsh CLI `0.1.0-rc.6`**（developer preview）验证。
+本 skill 全部内容基于 **dsh CLI `0.1.1-rc.2`**（developer preview）验证
+（0.1.0-rc.6 首验，2026-08-22 对照 `dsh-v0.1.1-rc.2` tag 全量复核）。
 
 引用任何结论前，先运行 `dsh --version` 比对：
 
 - **一致** → 可放心引用。
-- **不一致** → 必须提醒用户：「dsh-known-truth 基于 0.1.0-rc.6，与当前版本
+- **不一致** → 必须提醒用户：「dsh-known-truth 基于 0.1.1-rc.2，与当前版本
   \<X\> 不符，结论可能已漂移」，并建议按 `references/sources.md` 中的出处
  重新核验后更新本 skill。DSH 处于 developer preview，升级常伴随协调的
  依赖与 API 变更。

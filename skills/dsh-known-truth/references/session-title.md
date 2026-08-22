@@ -2,7 +2,8 @@
 
 **默认启用**的子系统：三个包都在 `dsh-base` 组合行里（`cordis.patch.yml`
 `id: session-title` / `id: session-title-llm`），无需任何补丁即工作。
-结论基于 0.1.0-rc.6 安装版源码（`node_modules/@deepseek-ai/`）核对。
+结论基于 0.1.0-rc.6 安装版源码核对，0.1.1-rc.2 复核（默认配置值与
+行为契约逐项一致）。
 
 ## 组成
 
@@ -63,10 +64,16 @@ session-title-llm:             # @deepseek-ai/dsh-session-title-first-prompt-llm
 
 ## 已知边界
 
-- provider 注册表**至多一个**实现；仓库只捆绑 `first-prompt`——服务契约支持
-  `all-prompts` cadence（后续消息可重命名），但 0.1.0-rc.6 **无对应制品**。
-- 无标题删除（解钉只能 `refresh`）、无独立标题索引（搜索只匹配标题与
-  workspace 名）；fallback 有 40 字节上限，长首句被截断。
+- provider 注册表**至多一个**实现；出厂 bundle 仍只挂 `first-prompt`。
+  0.1.1 起仓内新增 `@deepseek-ai/dsh-session-title-all-prompts-llm`
+  （`all-prompts` cadence：每条 eligible human 消息后重新修订标题，
+  新修订 supersede 旧工作），但**未随 CLI 制品分发**、任何出厂组合
+  未挂载——要用需自行安装并替换 first-prompt 行。
+- 无标题删除（解钉只能 `refresh`）；fallback 有 40 字节上限，长首句
+  被截断。
+- 侧栏搜索（0.1.1 复核）：标题 / workspace 名的本地子串匹配 **+**
+  `session-query-sqlite` 全文内容命中（带 snippet）两者合并——开启
+  全文索引后内容命中可见，不再是"只匹配标题与 workspace 名"。
 
 ## 出处
 

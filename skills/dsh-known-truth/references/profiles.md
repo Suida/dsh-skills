@@ -1,6 +1,7 @@
 # Profile 体系
 
-dsh 的部署单元。结论均基于 dsh CLI 0.1.0-rc.6。
+dsh 的部署单元。结论基于 dsh CLI 0.1.0-rc.6 验证，0.1.1-rc.2 复核
+（所引机制文件两版间逐字节未变）。
 
 ## 目录结构
 
@@ -12,7 +13,10 @@ dsh 的部署单元。结论均基于 dsh CLI 0.1.0-rc.6。
 - `pnpm-workspace.yaml` — out-of-tree 插件的 pnpm 设置
 
 出处：[apps/cli/README.md §Profiles](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/README.md)、
-[packages/boot/app-boot/README.md §Profiles](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/README.md)
+[packages/boot/app-boot/README.md §Profiles](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/README.md)；
+`pnpm-workspace.yaml` 的出处是源码
+[packages/boot/app-boot/src/profile.ts](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/src/profile.ts)
+（`PROFILE_PNPM_WORKSPACE` 常量与 `initProfile` 写入）。
 
 ## 组合顺序
 

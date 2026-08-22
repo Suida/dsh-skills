@@ -43,8 +43,9 @@
 
 常用事件类型（`SessionEventMap`）：`turn/start` / `turn/end`（
 `reason.kind`：`completed` / `aborted` / `error` / `interrupted` /
-`max-tokens`）、`step/start|end`、`user/message`、`assistant/chunk|message`、
-`tool/call|result`、`request/header`（含完整 system prompt 与模型配置）。
+`max-tokens` / `blocked`——`blocked` 为 0.1.1 新增）、`step/start|end`、
+`user/message`、`assistant/chunk|message`、`tool/call|result`、
+`request/header`（含完整 system prompt 与模型配置）。
 错误 `code: "UNKNOWN"` 来自统一的错误归一化（非 HarnessError 的异常
 保留原始 message、code 记为 UNKNOWN）。
 
