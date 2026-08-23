@@ -51,7 +51,10 @@ Get-ChildItem "$env:USERPROFILE\.dsh\profiles\<name>\node_modules\@deepseek-ai"
 ```
 
 第三方插件若把 `@deepseek-ai/*` 运行时包声明为普通 dependencies（而非
-peerDependencies），装进任何 profile 都会制造同款孪生。
+peerDependencies），装进任何 profile 都会制造同款孪生。同理，profile 的
+`pnpm-workspace.yaml` 中 `autoInstallPeers: false` 同属防孪生防线（阻止
+pnpm 物化 peer），**勿开**；由此产生的 missing-peer 告警为预期行为，
+根因与消音法见 `profiles.md`。
 
 ## 诊断方法（实证有效）
 

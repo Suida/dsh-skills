@@ -37,7 +37,7 @@ description: >-
 
 | 场景 | 阅读 |
 |---|---|
-| 创建/理解 profile，bundles 层顺序，bundle 解析与模板 | `references/profiles.md` |
+| 创建/理解 profile，bundles 层顺序，bundle 解析与模板，profile 的 pnpm missing-peer 告警 | `references/profiles.md` |
 | 工具派发崩溃（如 `reading 'prepare'`）、怀疑模块孪生、安装 in-box 包前 | `references/module-twin.md` |
 | 用 `--dump-config` 验证组合、写补丁层、解析会话日志、插桩诊断 | `references/inspection.md` |
 | 启用某项"默认没有"的功能（全文搜索、time-context、schedule、MCP、自省工具等） | `references/default-off-features.md` |

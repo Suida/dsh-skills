@@ -81,6 +81,42 @@ dsh 的部署单元。结论基于 dsh CLI 0.1.0-rc.6 验证，0.1.1-rc.2 复核
 出处：[packages/boot/app-boot/README.md §Profiles](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/README.md)、
 [apps/cli/README.md L39](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/README.md)
 
+## pnpm-workspace.yaml：防孪生语义与 missing-peer 告警
+
+`initProfile` 写入的模板（0.1.1-rc.2 实证于编译产物
+`dsh-app-boot/lib/index.js` L340-345）：
+
+```yaml
+packages:
+  - .
+nodeLinker: hoisted
+autoInstallPeers: false
+```
+
+- `autoInstallPeers: false` 是**防模块孪生防线**（见 `module-twin.md`），
+  **勿改**：out-of-tree 插件普遍把 `@deepseek-ai/*`（UI 插件还有
+  react/react-dom）声明为 peerDependencies，由安装本体经链接农场在运行时
+  供给；若 pnpm 自动物化这些 peer，即在 profile node_modules 制造孪生。
+- **missing-peer 告警是预期行为**：pnpm 无从知晓这份私有契约，每次
+  install 必报 "Issues with peer dependencies found"（`pnpm peers check`
+  可见全量列表）。告警指向的包若全部是 `@deepseek-ai/*` 与
+  react/react-dom，即为良性。
+- 根因是 dsh 侧的考虑不周：模板未用 pnpm 官方旋钮申报契约。手动补
+  下列内容即可永久消音；`initProfile` 明确 "Existing files are never
+  touched"（lib/index.js L348），升级不会覆盖：
+
+```yaml
+peerDependencyRules:
+  ignoreMissing:
+    - '@deepseek-ai/*'
+    - react
+    - react-dom
+```
+
+出处：[packages/boot/app-boot/src/profile.ts](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/src/profile.ts)
+（`PROFILE_PNPM_WORKSPACE` 与 `initProfile`）；消音效果经 pnpm v11.21
+实证（`pnpm peers check` → `No peer dependency issues found`）。
+
 ## 创建一个"与 web 相同"的自定义 profile
 
 1. `dsh plugin --profile <name> add <任意 out-of-tree 插件>`（仅初始化时
