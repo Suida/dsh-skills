@@ -173,7 +173,7 @@ def cmd_spawn(args) -> None:
         cli += ["--window-id", str(args.window_id)]
     # --pane-id doubles as the domain anchor; always pass it (defaulting to
     # the GUI's active pane) because newer wezterm refuses to guess.
-    pane_id = args.pane_id if args.pane_id is not None else _default_context_pane()
+    pane_id = resolve_pane(args.pane_id) if args.pane_id is not None else _default_context_pane()
     cli += ["--pane-id", str(pane_id)]
     if args.cwd:
         cli += ["--cwd", args.cwd]
@@ -201,7 +201,7 @@ def cmd_split(args) -> None:
     if args.cells is not None:
         cli += ["--cells", str(args.cells)]
     if args.pane_id is not None:
-        cli += ["--pane-id", str(args.pane_id)]
+        cli += ["--pane-id", str(resolve_pane(args.pane_id))]
     else:
         cli += ["--pane-id", str(_default_context_pane())]
     if args.cwd:
@@ -366,10 +366,12 @@ def cmd_kill(args) -> None:
     pane_id = resolve_pane(args.pane)
     _run(["kill-pane", "--pane-id", str(pane_id)])
     reg = _load_registry()
-    for n, pid in list(reg.items()):
-        if pid == pane_id:
-            del reg[n]
+    removed = [n for n, pid in reg.items() if pid == pane_id]
+    for n in removed:
+        del reg[n]
     _save_registry(reg)
+    print(json.dumps({"killed": pane_id, "name": removed[0] if removed else None},
+                     ensure_ascii=False))
 
 
 def cmd_names(args) -> None:
@@ -423,14 +425,14 @@ def main() -> None:
     p.add_argument("--cwd")
     p.add_argument("--new-window", action="store_true")
     p.add_argument("--window-id", type=int)
-    p.add_argument("--pane-id", type=int, help="context pane (default: any active)")
+    p.add_argument("--pane-id", help="context pane: id or registered name (default: active pane)")
     p.add_argument("--workspace")
     p.add_argument("prog", nargs=argparse.REMAINDER, help="-- prog args...")
     p.set_defaults(fn=cmd_spawn)
 
     p = sub.add_parser("split", help="split a pane, prints new pane-id")
     p.add_argument("--name")
-    p.add_argument("--pane-id", type=int)
+    p.add_argument("--pane-id", help="pane to split: id or registered name")
     p.add_argument("--left", action="store_true")
     p.add_argument("--right", action="store_true")
     p.add_argument("--top", action="store_true")
