@@ -76,6 +76,21 @@ def _live_pane_ids() -> set[int]:
     return {p["pane_id"] for p in list_panes()}
 
 
+def _default_context_pane() -> int:
+    """Pane to anchor spawn/split when none is given.
+
+    Newer wezterm versions REFUSE to guess (no WEZTERM_PANE in a headless/ssh
+    caller => error out), so resolve the GUI's active pane explicitly.
+    """
+    panes = list_panes()
+    if not panes:
+        raise SystemExit("no panes exist — is a wezterm GUI running?")
+    for p in panes:
+        if p.get("is_active"):
+            return p["pane_id"]
+    return panes[0]["pane_id"]
+
+
 # ------------------------------------------------------------------ registry
 
 def _load_registry() -> dict[str, int]:
@@ -156,8 +171,10 @@ def cmd_spawn(args) -> None:
         cli.append("--new-window")
     if args.window_id is not None:
         cli += ["--window-id", str(args.window_id)]
-    if args.pane_id is not None:
-        cli += ["--pane-id", str(args.pane_id)]
+    # --pane-id doubles as the domain anchor; always pass it (defaulting to
+    # the GUI's active pane) because newer wezterm refuses to guess.
+    pane_id = args.pane_id if args.pane_id is not None else _default_context_pane()
+    cli += ["--pane-id", str(pane_id)]
     if args.cwd:
         cli += ["--cwd", args.cwd]
     if args.workspace:
@@ -185,6 +202,8 @@ def cmd_split(args) -> None:
         cli += ["--cells", str(args.cells)]
     if args.pane_id is not None:
         cli += ["--pane-id", str(args.pane_id)]
+    else:
+        cli += ["--pane-id", str(_default_context_pane())]
     if args.cwd:
         cli += ["--cwd", args.cwd]
     if args.prog:
