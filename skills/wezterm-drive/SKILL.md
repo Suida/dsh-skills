@@ -2,15 +2,19 @@
 name: wezterm-drive
 description: >-
   用脚本控制本机正在运行的 WezTerm 终端：新建/拆分 pane、向 pane 注入命令、
-  等待执行完成并取回输出与退出码、读取滚动缓冲区。Use when a request says
-  "wezterm", "控制终端", "终端自动化", "在终端里跑/执行", "持久 shell 会话",
-  "向终端注入命令", "长命令 转义", "spawn pane", "split pane", "wezterm cli",
-  "终端里起一个 subagent / agent 会话", "dashboard 分屏", "分屏跑", "拆分终端窗口",
-  "wezterm pane", "看终端里跑的结果", "读取终端输出", or asks to run something
-  in a visible/persistent terminal instead of a one-shot shell.
-  Covers spawn/split/send/exec(带完成探测)/read/kill 与 pane 命名寻址。
+  等待执行完成并取回输出与退出码、读取滚动缓冲区、经 wezterm 内建 SSH 域在
+  远端机器上执行命令（命令作为数据直达远端 shell，零嵌套转义）。
+  Use when a request says "wezterm", "控制终端", "终端自动化", "在终端里跑/执行",
+  "持久 shell 会话", "向终端注入命令", "长命令 转义", "spawn pane", "split pane",
+  "wezterm cli", "终端里起一个 subagent / agent 会话", "dashboard 分屏", "分屏跑",
+  "拆分终端窗口", "wezterm pane", "看终端里跑的结果", "读取终端输出",
+  "在远端机器上跑/执行", "在实验室电脑上跑", "ssh 转义", "远程执行命令",
+  or asks to run something in a visible/persistent terminal instead of a one-shot
+  shell, or to run commands on a remote machine without quoting hell.
+  Covers spawn/split/send/exec(带完成探测)/read/kill、pane 命名寻址、SSH 域远端执行。
   Do NOT use for tmux/zellij 等其它 multiplexer（本 skill 只针对 WezTerm）、
-  WezTerm 外观/字体/配色配置、或不需要可见终端的普通一次性命令（直接用 shell 工具即可）。
+  WezTerm 外观/字体/配色配置、组网/隧道/链路本身的运维排障（那是 mesh-access-ops）、
+  或不需要可见终端的普通一次性命令（直接用 shell 工具即可）。
 ---
 
 # wezterm-drive
@@ -58,6 +62,24 @@ spawn 后 shell 提示符就绪需要约 1 秒——立刻 exec 通常也能工�
 - pwsh 下命令被包在 `try { } catch { }` 里，`-ErrorAction Stop` 这类终止错误也会被
   捕获并记 exit_code=1，错误文本进 output。
 
+## 远端机器：零嵌套转义执行（wezterm 内建 SSH）
+
+`spawn`/`split` 加 `--domain SSH:<host>`，得到的 pane 直接就是远端 shell
+（wezterm 内建 libssh2 客户端，不经过「本地 pwsh 套 ssh 命令」）。此后
+`exec`/`send`/`read` 原样可用——命令文本作为**数据**经 mux RPC + bracketed
+paste 直达远端编辑缓冲，嵌套引号、`$` 变量、JSON 负载都不再被中间 shell
+层层转义。这就是用它替代 `ssh host "命令"` 的理由。
+
+```
+wzt spawn --name lab --domain SSH:lab
+wzt exec lab "hostname; echo $env:USERPROFILE" --shell pwsh
+```
+
+- **域名因机器而异**（CASSY 上叫 `SSH:lab`，实验室机器上叫 `SSH:cassy`）；
+  域名来自对端 `~/.ssh/config` 的 Host 条目。拿不准时故意发一个
+  `wezterm cli spawn --domain-name X`，报错里的 possible names 即本机可用域。
+- `--shell` 以**远端**的 shell 为准（实验室 Windows 的 sshd 默认 pwsh）。
+
 ## 何时用 `send` + `read` 而不是 `exec`
 
 交互式程序（REPL、TUI、ssh 会话、需要中途看输出的长任务）不能用 `exec` 等待完成：
@@ -92,6 +114,10 @@ wzt read build --lines 10          # 之后任意时刻观察
 5. pane 输出中的 emoji/Unicode 正常支持（wzt 强制 UTF-8 输出）。
 6. 窄 pane（如 `--percent 30` 的 split）里一切输出都会折行——刚注入的文本可能
    「藏」在视野上方几行。观察时别只取最后两三行，用 `read --lines 20` 或 `--all`。
+7. SSH 域要求认证非交互可用（key 免密 + known_hosts 已收录）；否则会弹 GUI
+   确认框，agent 等不到人。新增远端机器时先人工 `wezterm ssh <host>` 过一次。
+8. `SSH:` 域的 pane 是一次性连接，断网即死（exec 会收到 `pane_gone`）。需要
+   跨断线存活的远端会话改用 `SSHMUX:<host>`（远端须装 wezterm），用法相同。
 
 ## 底层直通
 

@@ -182,6 +182,8 @@ def cmd_spawn(args) -> None:
     else:
         cli.append("--new-window")
         cli += ["--workspace", args.workspace or "agents"]
+    if args.domain:
+        cli += ["--domain-name", args.domain]
     # --pane-id doubles as the domain anchor; always pass it (defaulting to
     # the GUI's active pane) because newer wezterm refuses to guess.
     pane_id = resolve_pane(args.pane_id) if args.pane_id is not None else _default_context_pane()
@@ -215,6 +217,8 @@ def cmd_split(args) -> None:
             "pane usually belongs to the user — never split it implicitly. "
             "Spawn your own pane first (wzt spawn --name X ...), then split that.")
     cli += ["--pane-id", str(resolve_pane(args.pane_id))]
+    if args.domain:
+        cli += ["--domain-name", args.domain]
     if args.cwd:
         cli += ["--cwd", args.cwd]
     if args.prog:
@@ -441,12 +445,14 @@ def main() -> None:
     p.add_argument("--window-id", type=int, help="implies --tab: tab in this window")
     p.add_argument("--pane-id", help="context pane: id or registered name (default: active pane)")
     p.add_argument("--workspace", help="workspace for the new window (default: agents)")
+    p.add_argument("--domain", help="wezterm domain, e.g. SSH:lab / SSHMUX:lab / WSL:Ubuntu")
     p.add_argument("prog", nargs=argparse.REMAINDER, help="-- prog args...")
     p.set_defaults(fn=cmd_spawn)
 
     p = sub.add_parser("split", help="split a pane, prints new pane-id (--pane-id required)")
     p.add_argument("--name")
     p.add_argument("--pane-id", help="pane to split: id or registered name (required)")
+    p.add_argument("--domain", help="wezterm domain, e.g. SSH:lab / SSHMUX:lab / WSL:Ubuntu")
     p.add_argument("--left", action="store_true")
     p.add_argument("--right", action="store_true")
     p.add_argument("--top", action="store_true")
