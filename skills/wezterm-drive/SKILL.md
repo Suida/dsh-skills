@@ -27,11 +27,16 @@ description: >-
 
 ```
 wzt list                        # 所有 pane（含已注册的名字）
-wzt spawn --name build -- pwsh -NoLogo      # 新 tab，返回 {"pane_id": N}
+wzt spawn --name build -- pwsh -NoLogo      # 新窗口（agents workspace），返回 {"pane_id": N}
 wzt exec build "cargo test" --shell pwsh    # 注入执行，等完成，返回输出+退出码
 wzt read build --lines 20                   # 读最近 20 行（含 scrollback）
 wzt kill build
 ```
+
+**隔离是默认行为**：`spawn` 总是新开窗口并放进 `agents` workspace（可用
+`--workspace` 改名）——agent 的活动不应往用户正在使用的窗口里加 tab。
+仅当用户明确要求时才用 `spawn --tab`（当前窗口开 tab）。kill 掉窗口里
+最后一个 pane 时窗口随之关闭，清理就是逐个 kill 自己 spawn 的 pane。
 
 PANE 参数一律接受 **pane-id 数字或注册名**（`--name` 注册；注册表存于本机
 `%LOCALAPPDATA%\wzt`，自动清理死 pane，不随仓库同步）。
@@ -64,10 +69,13 @@ wzt read build --lines 10          # 之后任意时刻观察
 
 ## 布局与组织
 
-- `split --name X --right --percent 30 --pane-id P` 拆分已有 pane；`--move-pane-id`
-  是 wezterm 原生能力（wzt 未封装，可直接 `wezterm cli split-pane ...`）。
-- 需要与用户的日常 tab 隔离时：`spawn --new-window --workspace agents`，
-  把 agent 会话放进独立 workspace（对应 tmux 社区的"私有 socket 隔离"惯例）。
+- `split --name X --right --percent 30 --pane-id P` 拆分 pane。**`--pane-id` 必填，
+  且 P 必须是 agent 自己 spawn 的 pane**——默认活动 pane 属于用户，切分它会
+  打乱用户的窗口布局（工具会拒绝缺省调用并解释原因）。
+- 同一窗口内多 pane 并行任务的正确姿势：先 `spawn` 一个新窗口（自动进 agents
+  workspace），再对它 `split` 出所需的 pane。
+- `split-pane --move-pane-id` 是 wezterm 原生能力（wzt 未封装，可直接
+  `wezterm cli split-pane ...`）。
 - 读全量输出：`read P --all`（整个 scrollback）或 `--lines N`。
 
 ## 坑位（都是实测得出的，不要绕开）

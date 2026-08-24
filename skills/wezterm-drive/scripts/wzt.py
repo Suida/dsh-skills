@@ -167,18 +167,27 @@ def cmd_list(args) -> None:
 
 def cmd_spawn(args) -> None:
     cli = ["spawn"]
-    if args.new_window:
+    # Default posture: a NEW window in the dedicated workspace, so agent
+    # activity never rearranges the user's existing window/tab layout
+    # (the tmux community's "private socket" isolation convention).
+    # --tab (or --window-id) opts back into the current window.
+    tab_mode = args.tab or args.window_id is not None
+    if args.tab and args.new_window:
+        raise SystemExit("--tab and --new-window conflict; pick one")
+    if tab_mode:
+        if args.workspace:
+            raise SystemExit("--workspace requires new-window mode (drop --tab/--window-id)")
+        if args.window_id is not None:
+            cli += ["--window-id", str(args.window_id)]
+    else:
         cli.append("--new-window")
-    if args.window_id is not None:
-        cli += ["--window-id", str(args.window_id)]
+        cli += ["--workspace", args.workspace or "agents"]
     # --pane-id doubles as the domain anchor; always pass it (defaulting to
     # the GUI's active pane) because newer wezterm refuses to guess.
     pane_id = resolve_pane(args.pane_id) if args.pane_id is not None else _default_context_pane()
     cli += ["--pane-id", str(pane_id)]
     if args.cwd:
         cli += ["--cwd", args.cwd]
-    if args.workspace:
-        cli += ["--workspace", args.workspace]
     if args.prog:
         cli += ["--", *args.prog]
     pid = int(_run(cli).stdout.strip())
@@ -200,10 +209,12 @@ def cmd_split(args) -> None:
         cli += ["--percent", str(args.percent)]
     if args.cells is not None:
         cli += ["--cells", str(args.cells)]
-    if args.pane_id is not None:
-        cli += ["--pane-id", str(resolve_pane(args.pane_id))]
-    else:
-        cli += ["--pane-id", str(_default_context_pane())]
+    if args.pane_id is None:
+        raise SystemExit(
+            "split requires --pane-id (pane id or registered name): the active "
+            "pane usually belongs to the user — never split it implicitly. "
+            "Spawn your own pane first (wzt spawn --name X ...), then split that.")
+    cli += ["--pane-id", str(resolve_pane(args.pane_id))]
     if args.cwd:
         cli += ["--cwd", args.cwd]
     if args.prog:
@@ -420,19 +431,22 @@ def main() -> None:
     p.add_argument("--json", action="store_true")
     p.set_defaults(fn=cmd_list)
 
-    p = sub.add_parser("spawn", help="spawn a new tab/window, prints pane-id")
+    p = sub.add_parser("spawn", help="spawn a new window (default) or tab, prints pane-id")
     p.add_argument("--name")
     p.add_argument("--cwd")
-    p.add_argument("--new-window", action="store_true")
-    p.add_argument("--window-id", type=int)
+    p.add_argument("--new-window", action="store_true",
+                   help="(default) create a new window in the agent workspace")
+    p.add_argument("--tab", action="store_true",
+                   help="opt back into a tab in the current window (only when the user asked)")
+    p.add_argument("--window-id", type=int, help="implies --tab: tab in this window")
     p.add_argument("--pane-id", help="context pane: id or registered name (default: active pane)")
-    p.add_argument("--workspace")
+    p.add_argument("--workspace", help="workspace for the new window (default: agents)")
     p.add_argument("prog", nargs=argparse.REMAINDER, help="-- prog args...")
     p.set_defaults(fn=cmd_spawn)
 
-    p = sub.add_parser("split", help="split a pane, prints new pane-id")
+    p = sub.add_parser("split", help="split a pane, prints new pane-id (--pane-id required)")
     p.add_argument("--name")
-    p.add_argument("--pane-id", help="pane to split: id or registered name")
+    p.add_argument("--pane-id", help="pane to split: id or registered name (required)")
     p.add_argument("--left", action="store_true")
     p.add_argument("--right", action="store_true")
     p.add_argument("--top", action="store_true")
