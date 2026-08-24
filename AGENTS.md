@@ -75,8 +75,7 @@ skill 目录内**只放 agent 执行所需内容**：
 适用于 `skills/wezterm-drive/`：
 
 - **版本基准**：已验证 wezterm `20240203-110809`（stable）与
-  `20260823-230148`（nightly），双端（CASSY / DESKTOP-NE8T66I，后者
-  `20260716-195552`）实测通过。wezterm 升级后必须复核：先
+  `20260823-230148`（nightly），两台 Windows 节点实测通过。wezterm 升级后必须复核：先
   `scripts/wzt.py doctor`（输出含版本号），再跑 exec 冒烟矩阵——
   pwsh 与 bash 各一条「成功 + 非零退出码」用例；行为变化则修
   `scripts/wzt.py` 并更新本基准。

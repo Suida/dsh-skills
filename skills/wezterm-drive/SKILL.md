@@ -71,14 +71,16 @@ paste 直达远端编辑缓冲，嵌套引号、`$` 变量、JSON 负载都不�
 层层转义。这就是用它替代 `ssh host "命令"` 的理由。
 
 ```
-wzt spawn --name lab --domain SSH:lab
-wzt exec lab "hostname; echo $env:USERPROFILE" --shell pwsh
+wzt spawn --name remote --domain SSH:<host>
+wzt exec remote "hostname" --shell pwsh
 ```
 
-- **域名因机器而异**（CASSY 上叫 `SSH:lab`，实验室机器上叫 `SSH:cassy`）；
-  域名来自对端 `~/.ssh/config` 的 Host 条目。拿不准时故意发一个
-  `wezterm cli spawn --domain-name X`，报错里的 possible names 即本机可用域。
-- `--shell` 以**远端**的 shell 为准（实验室 Windows 的 sshd 默认 pwsh）。
+- **域名发现（不要猜、不要写死）**：`SSH:`/`SSHMUX:` 域由本机 `~/.ssh/config`
+  的 Host 条目自动填充。自己读 ssh config 的 `Host` 行推导可用域；或故意发
+  `wezterm cli spawn --domain-name X`，报错里的 possible names 即权威列表。
+  目标主机不在列表 = 该机器没配置——报告用户，不要自行修改 ssh config。
+- `--shell` 以**远端**的 shell 为准（Windows 远端通常 pwsh，Linux/macOS 远端
+  通常 bash）。
 
 ## 何时用 `send` + `read` 而不是 `exec`
 
