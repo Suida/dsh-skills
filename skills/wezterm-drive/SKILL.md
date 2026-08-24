@@ -6,8 +6,8 @@ description: >-
   "wezterm", "控制终端", "终端自动化", "在终端里跑/执行", "持久 shell 会话",
   "向终端注入命令", "长命令 转义", "spawn pane", "split pane", "wezterm cli",
   "终端里起一个 subagent / agent 会话", "dashboard 分屏", "分屏跑", "拆分终端窗口",
-  "wezterm pane", or asks to run something in a visible/persistent terminal
-  instead of a one-shot shell.
+  "wezterm pane", "看终端里跑的结果", "读取终端输出", or asks to run something
+  in a visible/persistent terminal instead of a one-shot shell.
   Covers spawn/split/send/exec(带完成探测)/read/kill 与 pane 命名寻址。
   Do NOT use for tmux/zellij 等其它 multiplexer（本 skill 只针对 WezTerm）、
   WezTerm 外观/字体/配色配置、或不需要可见终端的普通一次性命令（直接用 shell 工具即可）。
@@ -20,8 +20,10 @@ description: >-
 
 ## Quick start
 
-所有命令形如 `uv run <skill目录>/scripts/wzt.py <子命令>`（无 uv 时 `python ...` 亦可；
-下文简写为 `wzt`）。首次在一台机器上使用先跑 `wzt doctor` 验证连通性。
+所有命令形如 `uv run scripts\wzt.py <子命令>`——`scripts/wzt.py` 就在本 skill
+目录下（DSH 加载 skill 时给出的 base directory；无 uv 时 `python ...` 亦可；
+下文简写为 `wzt`）。首次在一台机器上使用先跑 `wzt doctor` 验证连通性
+（输出含 wezterm 版本号，可用于版本基准比对）。
 
 ```
 wzt list                        # 所有 pane（含已注册的名字）
@@ -80,6 +82,8 @@ wzt read build --lines 10          # 之后任意时刻观察
 4. `exec` 期间该 pane 被占用；同一 pane 并发注入会把输入混在一起——一个 pane
    同时只跑一条命令，要并行就多 spawn 几个。
 5. pane 输出中的 emoji/Unicode 正常支持（wzt 强制 UTF-8 输出）。
+6. 窄 pane（如 `--percent 30` 的 split）里一切输出都会折行——刚注入的文本可能
+   「藏」在视野上方几行。观察时别只取最后两三行，用 `read --lines 20` 或 `--all`。
 
 ## 底层直通
 

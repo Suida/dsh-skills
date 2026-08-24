@@ -70,6 +70,20 @@ skill 目录内**只放 agent 执行所需内容**：
 - **专项自查**：引用链接可访问且来源权威；无第三方项目名残留；
   基准版本号与 SKILL.md 一致。
 
+### wezterm-drive
+
+适用于 `skills/wezterm-drive/`：
+
+- **版本基准**：已验证 wezterm `20240203-110809`（stable）与
+  `20260823-230148`（nightly），双端（CASSY / DESKTOP-NE8T66I，后者
+  `20260716-195552`）实测通过。wezterm 升级后必须复核：先
+  `scripts/wzt.py doctor`（输出含版本号），再跑 exec 冒烟矩阵——
+  pwsh 与 bash 各一条「成功 + 非零退出码」用例；行为变化则修
+  `scripts/wzt.py` 并更新本基准。
+- **专项自查**：`scripts/wzt.py` 保持零依赖（仅用 stdlib），PEP 723
+  头不声明任何 dependencies；机器本地状态只写 `%LOCALAPPDATA%\wzt`
+  （或 `WZT_STATE_DIR`），不得写回仓库。
+
 ## 提交前验证清单（通用）
 
 1. 每个 `SKILL.md` 以 `---` YAML 块开头，frontmatter 字段齐全；
